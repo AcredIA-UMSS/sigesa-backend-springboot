@@ -1,0 +1,95 @@
+---
+id: sigesa-rule-code-review-on-code-change
+name: "Run Sigesa Code Reviewer on code changes"
+description: >-
+  Execute the @sigesa-code-reviewer-sigesa/SKILL whenever any code file is
+  created, modified or updated. Designed for the repository cursor structure
+  (.cursor/rules/*.mdc). Produces a code-review report, inline annotations and
+  appends an entry to team/*/log_interno.md (session prompt logging rule).
+
+# Trigger configuration
+trigger:
+  # event may be: file.create | file.update | file.delete | push | pr.open
+  event: file.update
+  # file globs relative to repo root to include/exclude
+  paths:
+    include:
+      - "**/*.java"
+      - "**/*.kt"
+      - "**/*.groovy"
+      - "**/*.py"
+      - "**/*.js"
+      - "**/*.ts"
+      - "**/*.go"
+      - "**/*.rs"
+      - "**/*.scala"
+      - "**/*.sql"
+      - "**/*.xml"
+      - "**/pom.xml"
+      - "**/*.sh"
+      - "**/*.yaml"
+      - "**/*.yml"
+      - "src/**"
+      - "app/**"
+    exclude:
+      - "**/node_modules/**"
+      - "**/build/**"
+      - "**/target/**"
+      - "**/dist/**"
+      - "**/.git/**"
+      - "**/vendor/**"
+      - "**/out/**"
+      - "docs/**"    # docs-only changes should not trigger code reviewer
+
+# Action: invoke the skill with context and guards
+action:
+  run_skill: "@sigesa-code-reviewer-sigesa/SKILL"
+  mode: sync           # run synchronously so results are available immediately
+  inputs:
+    prompt_contract: ".cursor/prompts/code-review-sigesa.prompt.md"
+    context:
+      # provide list of changed files and repo root for reproducibility
+      changed_files: $CHANGED_FILES
+      repo_root: $REPO_ROOT
+      # enforce repository rules from AGENTS.md and DTI
+      must_read: ["docs/05_dti/DTI.md", "docs/04_fsd/FSD.md"]
+      # repository metadata for the reviewer
+      repo: $REPO_NAME
+      branch: $BRANCH_NAME
+    policy:
+      require_no_secrets: true    # fail if secrets found in diffs
+      skip_generated: true        # skip generated/build artifacts
+      run_tests_hint: true        # recommend running existing tests if available
+      enforce_prompt_contract: true  # skill must validate inputs against contract
+      require_skill: "@sigesa-code-reviewer-sigesa/SKILL"
+
+# Outputs expected from the skill
+outputs:
+  - name: code_review_report
+    type: artifact
+    path: .cursor/artifacts/code_review/{{timestamp}}_report.json
+  - name: annotations
+    type: annotations
+
+# On failure fallback actions
+on_failure:
+  notify:
+    channels: ["maintainers", "team-leads"]
+  create_todo: true
+  todo_template:
+    title: "Code review issues found by sigesa-code-reviewer"
+    description: "Auto-created: issues reported by rule sigesa-rule-code-review-on-code-change." 
+
+# Metadata and guardrails — keep aligned with AGENTS.md
+metadata:
+  run_every_update: true
+  author: "Copilot"
+  references:
+    - "docs/08_agents/AGENTS.md"
+    - "AGENTS.md"
+  note: >-
+    This rule MUST append a session prompt entry to team/<owner>/log_interno.md
+    following the session logging rule (02_session_prompt_logging). It MUST NOT
+    commit secrets or modify source. If the skill proposes code changes, open a
+    PR and attach the generated report.
+---
