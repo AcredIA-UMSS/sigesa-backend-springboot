@@ -17,10 +17,12 @@ public class ReportControllerTest {
     @Test
     void export_directControllerInvocation_returnsRun() throws Exception {
         ReportService reportService = Mockito.mock(ReportService.class);
-        ReportController controller = new ReportController(reportService);
+        com.umss.sigesa.reports.security.SecurityInjector securityInjector = Mockito.mock(com.umss.sigesa.reports.security.SecurityInjector.class);
+        ReportController controller = new ReportController(reportService, securityInjector);
 
         ReportRun run = ReportRun.builder().id(1L).status("PENDING").createdBy("actor").build();
         Mockito.when(reportService.submitExport(anyLong(), any(com.umss.sigesa.reports.dto.FilterPayload.class), anyString())).thenReturn(run);
+        Mockito.when(securityInjector.apply(any(), anyString())).thenAnswer(i -> i.getArgument(0));
 
         var response = controller.export(1L, new com.umss.sigesa.reports.dto.FilterPayload(), "actor");
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
