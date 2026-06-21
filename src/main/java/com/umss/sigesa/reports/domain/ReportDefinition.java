@@ -35,15 +35,15 @@ public class ReportDefinition {
     private String ownerRole;
 
     @Convert(converter = MapToJsonConverter.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "text")
     private Map<String, Object> audiences;
 
     @Convert(converter = MapToJsonConverter.class)
-    @Column(name = "filters_allowed", columnDefinition = "jsonb")
+    @Column(name = "filters_allowed", columnDefinition = "text")
     private Map<String, Object> filtersAllowed;
 
     @Convert(converter = MapToJsonConverter.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "text")
     private Map<String, Object> metrics;
 
     private Integer version;

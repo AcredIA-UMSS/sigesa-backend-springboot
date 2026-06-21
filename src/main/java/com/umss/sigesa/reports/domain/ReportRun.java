@@ -24,7 +24,7 @@ public class ReportRun {
     private Long reportDefinitionId;
 
     @Convert(converter = com.umss.sigesa.reports.config.MapToJsonConverter.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "text")
     private Map<String, Object> params;
 
     @Column(name = "status")
@@ -37,11 +37,11 @@ public class ReportRun {
     private LocalDateTime finishedAt;
 
     @Convert(converter = com.umss.sigesa.reports.config.MapToJsonConverter.class)
-    @Column(name = "result_json", columnDefinition = "jsonb")
+    @Column(name = "result_json", columnDefinition = "text")
     private Map<String, Object> resultJson;
 
     @Convert(converter = com.umss.sigesa.reports.config.MapToJsonConverter.class)
-    @Column(name = "result_metadata", columnDefinition = "jsonb")
+    @Column(name = "result_metadata", columnDefinition = "text")
     private Map<String, Object> resultMetadata;
 
     @Column(name = "download_url", length = 1000)
