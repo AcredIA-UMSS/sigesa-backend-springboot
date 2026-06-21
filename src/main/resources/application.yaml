@@ -21,3 +21,7 @@ spring:
   sql:
     init:
       mode: always
+
+app:
+  reports:
+    export-dir: /tmp/sigesa-exports
