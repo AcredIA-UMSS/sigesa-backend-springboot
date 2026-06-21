@@ -1,3 +1,4 @@
+```yaml
 ---
 name: sigesa-prompt-contract-architect
 description: |
@@ -14,6 +15,7 @@ fsd-version-min: v0.1
 status: stable
 owner: Módulo 4 – UMSS (Equipo SIGESA)
 ---
+```
 
 # Skill: Prompt Contract Architect para SIGESA
 
