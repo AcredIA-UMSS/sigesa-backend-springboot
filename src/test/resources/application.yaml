@@ -1,0 +1,14 @@
+spring:
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: deferred
+  datasource:
+    url: ~
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
