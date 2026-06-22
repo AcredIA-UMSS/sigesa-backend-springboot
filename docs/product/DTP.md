@@ -43,6 +43,7 @@ artefactos_vivos:
 
 | Fecha | Cambio | Disparador (FSD-UC / DD) | ADR | PR / commit | Autor |
 |-------|--------|--------------------------|-----|-------------|-------|
+| 22/06/2026 | Implementación core de MOD-PROCESS (Dominio, Casos de Uso, Controladores y Stubs JPA para plantillas). | FSD-UC-003 / DD-UC-003 | N/A | Pendiente | Boris Angulo |
 | 22/06/2026 | Inicialización de la arquitectura base Spring Boot y DTP vivo. | N/A | N/A | `init` | Boris Angulo |
 
 ### A.2 Deltas respecto al DTI vFinal
@@ -58,6 +59,7 @@ artefactos_vivos:
 | FSD-UC | Design Doc | Estado | Release | Tests/Evals | Notas |
 |--------|------------|--------|---------|-------------|-------|
 | `FSD-UC-001` | `DD-UC-001` | pendiente | `release/3.0.0` | TBD | Preparando esqueleto hexagonal |
+| `FSD-UC-003` | `DD-UC-003` | hecho (core) | `release/3.0.0` | Pendiente | Faltan queries SQL nativas en JPA Adapters |
 
 ### A.4 Trazabilidad código ↔ DTP
 

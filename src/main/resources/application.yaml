@@ -12,12 +12,14 @@ spring:
       path: /h2-console
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create-drop # Esto crea las tablas automáticamente basadas en tus @Entity
     show-sql: false
-    defer-datasource-initialization: true
+    # ELIMINA ESTA LÍNEA O PONLA EN FALSE:
+    defer-datasource-initialization: false
     properties:
       hibernate:
         format_sql: true
   sql:
     init:
-      mode: always
+      # Si tienes un data.sql, este modo lo ejecutará SIEMPRE después de que Hibernate cree las tablas
+      mode: never
