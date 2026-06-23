@@ -152,14 +152,15 @@ flowchart LR
 
 ## 4. Impacto en las specs vivas `[máquina]`
 
-| Artefacto vivo | Cambio | ¿Delta vs DTI vFinal? |
-|---|---|---|
-| `docs/product/uc/FSD-UC-001.md` | Sin cambio de criterios | no |
-| `docs/product/uc/FSD-UC-002.md` | Confirmar `user_program_assignment` en DTP | no |
-| `docs/product/03_prd/PRD.md` | US-001/002/003 en progreso | no |
-| `docs/product/api_contracts.md` | Verificar `/api/v1` y códigos error | no |
-| `docs/product/DTP.md` | Changelog + §A.3 FSD-UC-001/002 | no |
-| `docs/product/modelo_datos.md` | Añadir `app_user`, `user_program_assignment` | no |
+| Artefacto vivo | Cambio | ¿Delta vs DTI vFinal? | Sync |
+|---|---|---|---|
+| `docs/product/uc/FSD-UC-001.md` | Estado → **Hecho** | no | `@dtp-sync` 2026-06-22 |
+| `docs/product/uc/FSD-UC-002.md` | Estado → **Hecho** | no | `@dtp-sync` 2026-06-22 |
+| `docs/product/03_prd/PRD.md` | US-001/002/003 en progreso | no | pendiente PRD |
+| `docs/product/api_contracts.md` | Códigos 401/409/204 MOD-AUTH | no | `@dtp-sync` 2026-06-22 |
+| `docs/product/DTP.md` | §A.1, §A.3, §B.1 MOD-AUTH | no | `@dtp-sync` 2026-06-22 |
+| `docs/product/modelo_datos.md` | `user_program_assignment` en §6 | no | `@dtp-sync` 2026-06-22 |
+| `docs/product/FSD.md` | UC-001/002 → **Hecho** | no | `@dtp-sync` 2026-06-22 |
 
 > **Recordatorio**: `docs/baseline/` **no se toca**.
 
@@ -235,11 +236,21 @@ Reporte esperado: `target/site/jacoco/index.html` tras `mvn verify`.
 
 ## 7. Definition of Done (checklist)
 
-- [ ] `fsd_uc` declarado y enlazado (FSD-UC-001, FSD-UC-002).
-- [ ] Diseño (§2) y alternativas (§3) documentados.
-- [ ] ADR-0003 referenciado; no ADR adicional requerido.
-- [ ] §4 Impacto en specs vivas registrado.
-- [x] Prompt(s) en `docs/prompts/impl/` (`PR-IMPL-004`) y `PROMPT_MAPPING.md` (PM-001 registrado).
-- [x] Tests/evals (§6) implementados; JaCoCo pendiente `mvn verify` local (sin Java en CI agente).
-- [x] DTP actualizado vía `@dtp-sync` (PM-006).
-- [ ] PR declara prompts y archivos generados vs editados.
+### Cumplido
+
+- [x] **`fsd_uc` declarado y enlazado** — frontmatter: `FSD-UC-001`, `FSD-UC-002`; enlaces en §1.
+- [x] **Diseño (§2) y alternativas (§3) documentados** — hexagonal, reglas de dominio, DDL, API, diagrama.
+- [x] **ADR-0003 referenciado** — `AuthPort` + `LocalAuthAdapter`; sin ADR adicional requerido (§3).
+- [x] **§4 Impacto en specs vivas registrado** — tabla §4 con columnas Sync; `@dtp-sync` 2026-06-22 aplicado a DTP, FSD, `api_contracts`, `modelo_datos`.
+- [x] **Prompt(s) en `docs/prompts/impl/`** — `PR-IMPL-004` presente.
+- [x] **`PROMPT_MAPPING.md` registrado** — PM-001…PM-007 (tabla resumen + cuerpos PM-006, PM-007).
+- [x] **Tests/evals (§6) implementados** — unit, integración servicios, HTTP, JPA, smoke JWT (`AuthenticatedApiSmokeTest`).
+- [x] **DTP actualizado vía `@dtp-sync`** — `docs/product/DTP.md` §A.1, §A.2, §A.3, §B.1 (2026-06-22).
+
+### Pendiente (explícito)
+
+- [ ] **JaCoCo ≥ 90% verificado** — ejecutar `.\mvnw.cmd verify` en entorno con JDK 21; registrar % real en §6 (tabla JaCoCo). *Bloqueante AGENTS.md hasta confirmación local.*
+- [ ] **PR con trazabilidad completa** — abrir PR `feature/auth-mod-auth` → `main` declarando: `PR-IMPL-004`, cadena PM-001…PM-007, commits `5cd14df`…`f38976b`, archivos generados vs editados, breaking change JWT (DTP §A.2 #1).
+- [ ] **PRD vivo (`docs/product/03_prd/PRD.md`)** — marcar US-001/002/003 como completadas cuando el equipo cierre release (fuera de alcance DD; no bloquea merge técnico).
+- [ ] **Integración Flyway/Liquibase** — script `V1__mod_auth_uk_upa_active.sql` existe; cablear en pipeline prod (delta DTP §A.2 #3).
+- [ ] **`AuditLogPort` real (UC-017)** — stub `NoOpAuditLogAdapter` en v1.0; sustituir cuando se implemente MOD-AUD.
