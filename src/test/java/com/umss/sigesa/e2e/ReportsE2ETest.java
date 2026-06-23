@@ -25,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Disabled("E2E disabled by default; enable when Testcontainers env is available")
 public class ReportsE2ETest {
 
     @Container
