@@ -7,6 +7,7 @@ import com.umss.sigesa.domain.model.AppUser;
 import com.umss.sigesa.domain.model.Email;
 import com.umss.sigesa.domain.model.Role;
 import com.umss.sigesa.domain.model.UserStatus;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("DeactivateUserService — FSD-UC-002 A1")
 class DeactivateUserServiceTest {
 
     @Mock
@@ -37,9 +39,11 @@ class DeactivateUserServiceTest {
     private DeactivateUserService deactivateUserService;
 
     @Test
-    void deactivate_revokesAssignmentsAndSetsDeactivated() {
+    @DisplayName("A1 Revocación: DEACTIVATED + revoked_at en assignments + audit")
+    void revocacion_desactivaUsuarioYRevocaAssignments() {
         UUID userId = UUID.randomUUID();
-        AppUser user = new AppUser(userId, Email.of("cc@umss.edu.bo"), Role.CC, UserStatus.ACTIVE,
+        Email email = Email.of("cc@umss.edu.bo");
+        AppUser user = new AppUser(userId, email, Role.CC, UserStatus.ACTIVE,
                 LocalDateTime.now(), LocalDateTime.now());
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
@@ -50,11 +54,12 @@ class DeactivateUserServiceTest {
         ArgumentCaptor<AppUser> captor = ArgumentCaptor.forClass(AppUser.class);
         verify(userRepository).update(captor.capture());
         assertEquals(UserStatus.DEACTIVATED, captor.getValue().getStatus());
-        verify(auditLogPort).logUserDeactivated(userId, user.getEmail());
+        verify(auditLogPort).logUserDeactivated(userId, email);
     }
 
     @Test
-    void deactivate_userNotFoundThrows() {
+    @DisplayName("Usuario inexistente lanza UserNotFoundException")
+    void usuarioInexistente_lanzaNotFound() {
         UUID userId = UUID.randomUUID();
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 

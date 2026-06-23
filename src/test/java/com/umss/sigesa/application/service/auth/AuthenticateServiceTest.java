@@ -11,6 +11,7 @@ import com.umss.sigesa.domain.model.AuthenticatedIdentity;
 import com.umss.sigesa.domain.model.Email;
 import com.umss.sigesa.domain.model.Role;
 import com.umss.sigesa.domain.model.UserStatus;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,6 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("AuthenticateService — FSD-UC-001")
 class AuthenticateServiceTest {
 
     @Mock
@@ -45,7 +47,8 @@ class AuthenticateServiceTest {
     private AuthenticateService authenticateService;
 
     @Test
-    void authenticate_successfulLoginActivatesInactiveUser() {
+    @DisplayName("Escenario: Inicio de sesión exitoso con rol [CC] y programScope")
+    void loginExitosoConRolCc_retornaJwtYActivaInactive() {
         UUID userId = UUID.randomUUID();
         Email email = Email.of("cc@umss.edu.bo");
         UUID programId = UUID.randomUUID();
@@ -61,28 +64,34 @@ class AuthenticateServiceTest {
 
         assertEquals(Role.CC, result.role());
         assertEquals(List.of(programId), result.programScope());
+        assertEquals("token", result.token().accessToken());
         verify(userRepository).update(any(AppUser.class));
+        verify(auditLogPort).logLogin(userId, email);
     }
 
     @Test
-    void authenticate_activeUserSkipsActivationUpdate() {
+    @DisplayName("Escenario: Inicio de sesión exitoso con rol [JD] activo")
+    void loginExitosoConRolJd_noReactivaUsuario() {
         UUID userId = UUID.randomUUID();
-        Email email = Email.of("td@umss.edu.bo");
-        AuthenticatedIdentity identity = new AuthenticatedIdentity(userId, email, Role.TD, List.of());
-        AppUser activeUser = new AppUser(userId, email, Role.TD, UserStatus.ACTIVE,
+        Email email = Email.of("jd@umss.edu.bo");
+        AuthenticatedIdentity identity = new AuthenticatedIdentity(userId, email, Role.JD, List.of());
+        AppUser activeUser = new AppUser(userId, email, Role.JD, UserStatus.ACTIVE,
                 LocalDateTime.now(), LocalDateTime.now());
 
         when(authPort.authenticate(email, "secret".toCharArray())).thenReturn(Optional.of(identity));
         when(userRepository.findById(userId)).thenReturn(Optional.of(activeUser));
-        when(tokenPort.issue(identity)).thenReturn(new IssuedToken("token", 3600L));
+        when(tokenPort.issue(identity)).thenReturn(new IssuedToken("token-jd", 86400L));
 
-        authenticateService.authenticate("td@umss.edu.bo", "secret");
+        var result = authenticateService.authenticate("jd@umss.edu.bo", "secret");
 
+        assertEquals(Role.JD, result.role());
         verify(userRepository, never()).update(any(AppUser.class));
+        verify(auditLogPort).logLogin(userId, email);
     }
 
     @Test
-    void authenticate_invalidCredentialsThrows401ForMissingUser() {
+    @DisplayName("A1: Credenciales inválidas — usuario inexistente (401 genérico)")
+    void credencialesInvalidas_usuarioInexistente() {
         when(authPort.authenticate(any(Email.class), any(char[].class))).thenReturn(Optional.empty());
 
         InvalidCredentialsException ex = assertThrows(InvalidCredentialsException.class,
@@ -91,20 +100,27 @@ class AuthenticateServiceTest {
     }
 
     @Test
-    void authenticate_invalidCredentialsThrows401WhenUserMissingAfterAuth() {
-        UUID userId = UUID.randomUUID();
-        Email email = Email.of("cc@umss.edu.bo");
-        AuthenticatedIdentity identity = new AuthenticatedIdentity(userId, email, Role.CC, List.of());
+    @DisplayName("A1: Credenciales inválidas — password incorrecto (401 genérico)")
+    void credencialesInvalidas_passwordIncorrecto() {
+        when(authPort.authenticate(any(Email.class), any(char[].class))).thenReturn(Optional.empty());
 
-        when(authPort.authenticate(email, "secret".toCharArray())).thenReturn(Optional.of(identity));
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        InvalidCredentialsException ex = assertThrows(InvalidCredentialsException.class,
+                () -> authenticateService.authenticate("cc@umss.edu.bo", "wrong"));
+        assertEquals(InvalidCredentialsException.GENERIC_MESSAGE, ex.getMessage());
+    }
+
+    @Test
+    @DisplayName("A1: Usuario DEACTIVATED tratado como credenciales inválidas")
+    void credencialesInvalidas_usuarioDesactivadoViaAuthPort() {
+        when(authPort.authenticate(any(Email.class), any(char[].class))).thenReturn(Optional.empty());
 
         assertThrows(InvalidCredentialsException.class,
                 () -> authenticateService.authenticate("cc@umss.edu.bo", "secret"));
     }
 
     @Test
-    void authenticate_missingRoleThrows403() {
+    @DisplayName("A2: Sin rol asignado — 403 ACCESS_DENIED")
+    void sinRolAsignado_lanza403() {
         UUID userId = UUID.randomUUID();
         Email email = Email.of("cc@umss.edu.bo");
         AuthenticatedIdentity identity = new AuthenticatedIdentity(userId, email, null, List.of());
@@ -114,5 +130,14 @@ class AuthenticateServiceTest {
         assertThrows(RoleNotAssignedException.class,
                 () -> authenticateService.authenticate("cc@umss.edu.bo", "secret"));
         verify(userRepository, never()).findById(userId);
+    }
+
+    @Test
+    @DisplayName("Password nulo se trata como credenciales inválidas")
+    void passwordNulo_lanza401() {
+        when(authPort.authenticate(any(Email.class), any(char[].class))).thenReturn(Optional.empty());
+
+        assertThrows(InvalidCredentialsException.class,
+                () -> authenticateService.authenticate("cc@umss.edu.bo", null));
     }
 }

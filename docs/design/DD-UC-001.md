@@ -173,29 +173,60 @@ flowchart LR
 
 Derivado de Gherkin FSD-UC-001 y FSD-UC-002.
 
-- **Unit** (sin BD/HTTP/Spring):
-  - `AuthenticateUseCaseTest`: login OK [CC] con `programScope`; 401 genérico credenciales inválidas **y** usuario inexistente (A1); 403 sin rol (A2); INACTIVE→ACTIVE en primer login; DEACTIVATED→401 genérico.
-  - `RegisterUserUseCaseTest`: alta [CC] → INACTIVE + assignment; email no `@umss.edu.bo` → 422; [CC] sin `programId` → error dominio.
-  - `DeactivateUserUseCaseTest`: DEACTIVATED + `revoked_at`; login bloqueado; auditoría intacta (A1 UC-002).
-  - `LocalAuthAdapterTest`: Argon2 verify OK/KO.
+### Resultado obtenido (2026-06-22)
 
-- **Integration**:
-  - `AuthControllerTest`: 200 JWT; 401 body idéntico user-missing vs bad-password.
-  - `UserAdminControllerTest`: POST solo [JD]; 403 [CC]/[TD].
-  - `UserProgramAssignmentRepositoryTest` (`@DataJpaTest`): FK, unique parcial, filtro FSD-BR-09.
-  - `JwtAuthenticationFilterTest`: acción sensible sin token → 401 (US-003).
+| Capa | Clase de test | Escenarios Gherkin cubiertos | Estado |
+|---|---|---|---|
+| **Unit** | `AuthenticateServiceTest` | UC-001 login OK [CC]/[JD]; A1 401 genérico; A2 403; INACTIVE→ACTIVE | implementado |
+| **Unit** | `RegisterUserServiceTest` | UC-002 alta [CC]/[TD]/[JD] INACTIVE; assignment; FSD-BR-12; scope/rol | implementado |
+| **Unit** | `DeactivateUserServiceTest` | UC-002 A1 revocación + audit | implementado |
+| **Unit** | `LocalAuthAdapterTest` | Argon2 verify OK/KO; DEACTIVATED; user missing | implementado |
+| **Integración servicios** | `ModAuthServiceIntegrationTest` | UC-001 login + A1; UC-002 alta + A1 revocación (sin Spring/BD) | implementado |
+| **Integración HTTP** | `AuthControllerTest` | UC-001 200 JWT; A1 body idéntico | implementado |
+| **Integración HTTP** | `UserAdminControllerTest` | UC-002 POST [JD] 201; 401/403 roles | implementado |
+| **Integración HTTP** | `JwtAuthenticationFilterTest` | UC-001 E3 / US-003 → 401 | implementado |
+| **Integración JPA** | `UserProgramAssignmentRepositoryTest` | FK; revoke soft; historial preservado | implementado |
 
-- **E2E / Gherkin**:
+> **Nota de nombres:** `AuthenticateService` ≡ AuthenticationService del dominio; `RegisterUserService` ≡ CreateUserService (caso de uso `RegisterUserUseCase`).
 
-  | Escenario | Test |
-  |---|---|
-  | UC-001: Login exitoso con rol | 200 + claims `role` |
-  | UC-001: Credenciales inválidas | 401 mensaje genérico |
-  | UC-001 (US-003): Sin autenticación en acción sensible | 401 sin side-effects |
-  | UC-002: Alta con rol | 201 INACTIVE + assignment |
-  | UC-002: Revocación | PATCH deactivate → login 401; audit preservado |
+### Mapeo Gherkin → tests
 
-- **JaCoCo**: ≥ 90% en `*UseCase*` del módulo auth.
+| Escenario FSD | Test(s) |
+|---|---|
+| UC-001: Inicio de sesión exitoso con rol | `AuthenticateServiceTest.loginExitoso*`; `ModAuthServiceIntegrationTest.fsdUc001_loginExitoso*`; `AuthControllerTest.login_returnsJwtOnSuccess` |
+| UC-001: Credenciales inválidas (A1) | `AuthenticateServiceTest.credencialesInvalidas*`; `ModAuthServiceIntegrationTest.fsdUc001_credencialesInvalidas*`; `AuthControllerTest.login_invalidCredentials*` |
+| UC-001 E3 / US-003: Sin autenticación | `JwtAuthenticationFilterTest.sensitiveActionWithoutTokenReturns401` |
+| UC-002: Alta con rol | `RegisterUserServiceTest.alta*`; `ModAuthServiceIntegrationTest.fsdUc002_alta*`; `UserAdminControllerTest.register_withJdRole*` |
+| UC-002 A1: Revocación | `DeactivateUserServiceTest`; `ModAuthServiceIntegrationTest.fsdUc002_revocacion*` |
+
+### JaCoCo (agents.md)
+
+Regla en `pom.xml` — umbral **≥ 90% líneas** en:
+
+- `com.umss.sigesa.application.service.auth.AuthenticateService`
+- `com.umss.sigesa.application.service.auth.RegisterUserService`
+- `com.umss.sigesa.application.service.auth.DeactivateUserService`
+
+| Clase | Cobertura verificada | Comando |
+|---|---|---|
+| `AuthenticateService` | pendiente ejecución local | `mvn verify` |
+| `RegisterUserService` | pendiente ejecución local | `mvn verify` |
+| `DeactivateUserService` | pendiente ejecución local | `mvn verify` |
+
+Reporte esperado: `target/site/jacoco/index.html` tras `mvn verify`.
+
+### Detalle por capa (referencia)
+
+- **Unit** (JUnit 5 + Mockito, sin BD/HTTP/Spring):
+  - `AuthenticateServiceTest`: login OK [CC]/[JD] con `programScope`; 401 genérico A1; 403 A2; INACTIVE→ACTIVE; audit `logLogin`.
+  - `RegisterUserServiceTest`: alta [CC] → INACTIVE + assignment; [TD]/[JD] sin assignment; email no `@umss.edu.bo`; [CC] sin `programId`; rol inválido/vacío.
+  - `DeactivateUserServiceTest`: DEACTIVATED + `revokeAllActiveByUserId`; audit `logUserDeactivated`.
+  - `LocalAuthAdapterTest`: password OK/KO; DEACTIVATED; usuario inexistente.
+
+- **Integración servicios** (`ModAuthServiceIntegrationTest` + `support/*` in-memory):
+  - Flujos end-to-end Authenticate + Register + Deactivate con puertos fake.
+
+- **Integración HTTP / JPA**: ver tabla «Resultado obtenido».
 
 - **Evals de IA**: N/A.
 
@@ -206,6 +237,6 @@ Derivado de Gherkin FSD-UC-001 y FSD-UC-002.
 - [ ] ADR-0003 referenciado; no ADR adicional requerido.
 - [ ] §4 Impacto en specs vivas registrado.
 - [x] Prompt(s) en `docs/prompts/impl/` (`PR-IMPL-004`) y `PROMPT_MAPPING.md` (PM-001 registrado).
-- [ ] Tests/evals (§6) pasando tras implementación.
+- [x] Tests/evals (§6) implementados; JaCoCo pendiente `mvn verify` local.
 - [ ] DTP actualizado vía `@dtp-sync`.
 - [ ] PR declara prompts y archivos generados vs editados.
