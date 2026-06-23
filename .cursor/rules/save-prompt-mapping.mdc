@@ -1,6 +1,6 @@
 ---
 description: Registro obligatorio de trazabilidad. Se activa al ejecutar prompts de implementación o al generar/modificar código en el proyecto.
-globs: ["src/**", "**/*.java", "**/pom.xml", "**/*.sql", "src/test/**"]
+globs: ["src/**", "**/*.java", "**/pom.xml", "**/*.sql", "src/test/**", "docs/prompts/impl/**"]
 ---
 # 📋 Registro obligatorio en PROMPT_MAPPING
 
