@@ -3,14 +3,16 @@ package com.umss.sigesa.config;
 import jakarta.persistence.EntityManager;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
  * Aplica constraints DDL no generados por Hibernate (DD-UC-001).
- * En PostgreSQL prod usar {@code src/main/resources/db/migration/V1__mod_auth_uk_upa_active.sql}.
+ * Solo dev/test (H2): en prod usar Flyway ({@code application-prod.yaml}).
  */
 @Component
+@Profile("!prod")
 @Order(100)
 public class AuthSchemaInitializer implements ApplicationRunner {
 

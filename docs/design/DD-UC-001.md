@@ -156,7 +156,7 @@ flowchart LR
 |---|---|---|---|
 | `docs/product/uc/FSD-UC-001.md` | Estado → **Hecho** | no | `@dtp-sync` 2026-06-22 |
 | `docs/product/uc/FSD-UC-002.md` | Estado → **Hecho** | no | `@dtp-sync` 2026-06-22 |
-| `docs/product/03_prd/PRD.md` | US-001/002/003 en progreso | no | pendiente PRD |
+| `docs/product/03_prd/PRD.md` | US-001/002/003 → **Hecho backend** | no | `@dtp-sync` 2026-06-22 |
 | `docs/product/api_contracts.md` | Códigos 401/409/204 MOD-AUTH | no | `@dtp-sync` 2026-06-22 |
 | `docs/product/DTP.md` | §A.1, §A.3, §B.1 MOD-AUTH | no | `@dtp-sync` 2026-06-22 |
 | `docs/product/modelo_datos.md` | `user_program_assignment` en §6 | no | `@dtp-sync` 2026-06-22 |
@@ -247,10 +247,17 @@ Reporte esperado: `target/site/jacoco/index.html` tras `mvn verify`.
 - [x] **Tests/evals (§6) implementados** — unit, integración servicios, HTTP, JPA, smoke JWT (`AuthenticatedApiSmokeTest`).
 - [x] **DTP actualizado vía `@dtp-sync`** — `docs/product/DTP.md` §A.1, §A.2, §A.3, §B.1 (2026-06-22).
 
-### Pendiente (explícito)
+- [x] **PRD vivo (`docs/product/03_prd/PRD.md`)** — US-001/002/003 marcadas **Hecho backend** (2026-06-22); frontend `/login` fuera de alcance MOD-AUTH v1.0.
 
-- [ ] **JaCoCo ≥ 90% verificado** — ejecutar `.\mvnw.cmd verify` en entorno con JDK 21; registrar % real en §6 (tabla JaCoCo). *Bloqueante AGENTS.md hasta confirmación local.*
-- [ ] **PR con trazabilidad completa** — abrir PR `feature/auth-mod-auth` → `main` declarando: `PR-IMPL-004`, cadena PM-001…PM-007, commits `5cd14df`…`f38976b`, archivos generados vs editados, breaking change JWT (DTP §A.2 #1).
-- [ ] **PRD vivo (`docs/product/03_prd/PRD.md`)** — marcar US-001/002/003 como completadas cuando el equipo cierre release (fuera de alcance DD; no bloquea merge técnico).
-- [ ] **Integración Flyway/Liquibase** — script `V1__mod_auth_uk_upa_active.sql` existe; cablear en pipeline prod (delta DTP §A.2 #3).
-- [ ] **`AuditLogPort` real (UC-017)** — stub `NoOpAuditLogAdapter` en v1.0; sustituir cuando se implemente MOD-AUD.
+### Pendiente (acción manual o verificación)
+
+- [ ] **JaCoCo ≥ 90% verificado** — ejecutar `.\mvnw.cmd verify` con JDK 21; registrar % real en §6 (tabla JaCoCo). *Bloqueante AGENTS.md.*
+- [ ] **PR con trazabilidad completa** — abrir PR `feature/auth-mod-auth` → `main` con `PR-IMPL-004`, PM-001…PM-007, commits `5cd14df`…`f38976b`, breaking change JWT (DTP §A.2 #1). Plantilla en descripción del PR (ver chat / README).
+
+### Cumplido (infra / config)
+
+- [x] **Integración Flyway (prod)** — `flyway-core` en `pom.xml`; `application-prod.yaml` (`spring.flyway.enabled=true`, `ddl-auto: validate`); dev/test: Flyway off + `AuthSchemaInitializer` (`@Profile("!prod")`).
+
+### Diferido v1.1 (no bloquea DoD MOD-AUTH)
+
+- [ ] **`AuditLogPort` real (UC-017 / MOD-AUD)** — v1.0 usa `NoOpAuditLogAdapter` (§1 alcance excluido). Sustituir al implementar auditoría persistente.

@@ -56,7 +56,7 @@ artefactos_vivos:
 |---|--------------------------|-------------------------|-----------------------|--------|-----|
 | 1 | Perímetro API | Endpoints legacy sin auth explícita en DTI piloto | Todo `/api/v1/**` excepto `POST /auth/login` exige JWT Bearer | MOD-AUTH v1.0 unifica seguridad antes de MOD-EVIDENCE | N/A (DD-UC-001) |
 | 2 | Entrega password temporal | No especificado en API baseline | Alta genera password en servidor; entrega **offline** v1.0 (no en JSON response) | Evitar exposición en tránsito; capacitación [JD] | N/A |
-| 3 | Migración DDL MOD-AUTH | Índice parcial en DTI | Script `src/main/resources/db/migration/V1__mod_auth_uk_upa_active.sql` + `AuthSchemaInitializer` en H2 dev | Hibernate no genera índices parciales | N/A |
+| 3 | Migración DDL MOD-AUTH | Índice parcial en DTI | Flyway perfil `prod` + script `V1__mod_auth_uk_upa_active.sql`; H2 dev: `AuthSchemaInitializer` | Hibernate no genera índices parciales | N/A |
 
 ### A.3 Estado de implementación por FSD-UC
 
@@ -97,7 +97,7 @@ artefactos_vivos:
 | **Endpoints** | `POST /api/v1/auth/login` (público); `POST /api/v1/admin/users` ([JD]); `PATCH /api/v1/admin/users/{id}/deactivate` ([JD]) |
 | **Perímetro JWT** | Todo `/api/v1/**` excepto login exige `Authorization: Bearer` (delta §A.2 #1) |
 | **Tablas JPA** | `app_user`, `user_program_assignment` |
-| **Índice parcial** | `uk_upa_active` — `db/migration/V1__mod_auth_uk_upa_active.sql` + `AuthSchemaInitializer` (H2 dev) |
+| **Índice parcial** | `uk_upa_active` — Flyway (`application-prod.yaml`) o `AuthSchemaInitializer` (dev/test H2) |
 | **Password hashing** | Argon2id (`Argon2PasswordEncoder`) |
 | **JWT** | HS256; claims `sub`, `email`, `role`, `programScope[]`; secret `SIGESA_JWT_SECRET`; TTL `SIGESA_JWT_EXPIRATION_SECONDS` (default 86400) |
 | **Errores HTTP** | `401 AUTH_INVALID_CREDENTIALS` (A1 login); `403 ACCESS_DENIED` (A2); `409 EMAIL_ALREADY_REGISTERED`; `422 INVALID_EMAIL_DOMAIN` / `INVALID_SCOPE` / `INVALID_ROLE` |
