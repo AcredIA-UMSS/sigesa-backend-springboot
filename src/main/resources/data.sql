@@ -220,3 +220,35 @@ FROM fase WHERE codigo = 'CEUB-EVID-UMSS';
 
 -- Fase raíz sin subfases (CEUB resolución)
 -- CEUB-RESOL-UMSS queda sin subfases intencionalmente
+
+-- =========================
+-- Report definitions for E2E tests
+-- =========================
+
+INSERT INTO report_definition (codigo, nombre, descripcion, owner_role, audiences, filters_allowed, metrics, version, created_at, updated_at)
+VALUES (
+  'E2E-KPIS',
+  'E2E KPIs Report',
+  'Report used by automated E2E to validate KPI export and counts',
+  'CC',
+  '{"roles":["CC","TD"]}',
+  '{}',
+  '{}',
+  1,
+  CURRENT_TIMESTAMP,
+  CURRENT_TIMESTAMP
+);
+
+INSERT INTO report_definition (codigo, nombre, descripcion, owner_role, audiences, filters_allowed, metrics, version, created_at, updated_at)
+VALUES (
+  'E2E-DETAILED',
+  'E2E Detailed Report',
+  'Detailed rows export for E2E tests',
+  'CC',
+  '{"roles":["CC","TD"]}',
+  '{}',
+  '{}',
+  1,
+  CURRENT_TIMESTAMP,
+  CURRENT_TIMESTAMP
+);
