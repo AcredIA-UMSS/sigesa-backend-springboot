@@ -6,6 +6,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+/**
+ * Aplica constraints DDL no generados por Hibernate (DD-UC-001).
+ * En PostgreSQL prod usar {@code src/main/resources/db/migration/V1__mod_auth_uk_upa_active.sql}.
+ */
 @Component
 @Order(100)
 public class AuthSchemaInitializer implements ApplicationRunner {

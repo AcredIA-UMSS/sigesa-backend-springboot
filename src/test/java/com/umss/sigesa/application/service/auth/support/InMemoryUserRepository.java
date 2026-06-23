@@ -17,7 +17,7 @@ public class InMemoryUserRepository implements UserRepositoryPort {
     @Override
     public AppUser save(AppUser user, char[] rawPassword) {
         if (findByEmail(user.getEmail()).isPresent()) {
-            throw new DuplicateEmailException(user.getEmail().value());
+            throw new DuplicateEmailException();
         }
         usersById.put(user.getId(), new StoredUser(user, new String(rawPassword)));
         return user;

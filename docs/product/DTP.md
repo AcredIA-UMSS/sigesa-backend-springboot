@@ -55,6 +55,7 @@ artefactos_vivos:
 |---|--------------------------|-------------------------|-----------------------|--------|-----|
 | 1 | Perímetro API | Endpoints legacy sin auth explícita en DTI piloto | Todo `/api/v1/**` excepto `POST /auth/login` exige JWT Bearer | MOD-AUTH v1.0 unifica seguridad antes de MOD-EVIDENCE | N/A (DD-UC-001) |
 | 2 | Entrega password temporal | No especificado en API baseline | Alta genera password en servidor; entrega **offline** v1.0 (no en JSON response) | Evitar exposición en tránsito; capacitación [JD] | N/A |
+| 3 | Migración DDL MOD-AUTH | Índice parcial en DTI | Script `src/main/resources/db/migration/V1__mod_auth_uk_upa_active.sql` + `AuthSchemaInitializer` en H2 dev | Hibernate no genera índices parciales | N/A |
 
 ### A.3 Estado de implementación por FSD-UC
 

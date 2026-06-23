@@ -43,7 +43,7 @@ public class AuthExceptionHandler {
     @ExceptionHandler(DuplicateEmailException.class)
     public ResponseEntity<Map<String, String>> handleDuplicateEmail(DuplicateEmailException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(Map.of("error", "EMAIL_ALREADY_REGISTERED", "message", ex.getMessage()));
+                .body(Map.of("error", "EMAIL_ALREADY_REGISTERED", "message", DuplicateEmailException.MESSAGE));
     }
 
     @ExceptionHandler(DuplicateActiveAssignmentException.class)

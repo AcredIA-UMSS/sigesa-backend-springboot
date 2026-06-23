@@ -37,7 +37,7 @@ public class RegisterUserService implements RegisterUserUseCase {
         validateScope(role, programId);
 
         if (userRepository.findByEmail(emailVo).isPresent()) {
-            throw new DuplicateEmailException(emailVo.value());
+            throw new DuplicateEmailException();
         }
 
         LocalDateTime now = LocalDateTime.now();

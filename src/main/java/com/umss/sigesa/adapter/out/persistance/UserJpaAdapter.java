@@ -32,7 +32,7 @@ public class UserJpaAdapter implements UserRepositoryPort {
             AppUserEntity saved = jpaRepository.save(entity);
             return toDomain(saved);
         } catch (DataIntegrityViolationException ex) {
-            throw new DuplicateEmailException(user.getEmail().value());
+            throw new DuplicateEmailException();
         }
     }
 

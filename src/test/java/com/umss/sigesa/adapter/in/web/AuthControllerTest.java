@@ -20,6 +20,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -86,13 +87,31 @@ class AuthControllerTest {
     }
 
     @Test
-    void login_blankEmailReturns400() throws Exception {
+    void login_blankEmailReturns401() throws Exception {
+        when(authenticateUseCase.authenticate(eq(""), anyString()))
+                .thenThrow(new InvalidCredentialsException());
+
         mockMvc.perform(post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"email":"","password":"secret"}
                                 """))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value("VALIDATION_ERROR"));
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("AUTH_INVALID_CREDENTIALS"))
+                .andExpect(jsonPath("$.message").value("Credenciales inválidas"));
+    }
+
+    @Test
+    void login_blankPasswordReturns401() throws Exception {
+        when(authenticateUseCase.authenticate(eq("cc@umss.edu.bo"), eq("")))
+                .thenThrow(new InvalidCredentialsException());
+
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"email":"cc@umss.edu.bo","password":""}
+                                """))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("AUTH_INVALID_CREDENTIALS"));
     }
 }

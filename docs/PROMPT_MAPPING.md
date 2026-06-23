@@ -4,7 +4,8 @@
 | PR-IMPL-004 | DD-UC-001 | FSD-UC-001, FSD-UC-002 | Implementación MOD-AUTH hexagonal + JWT (Paso 4) | PM-002 |
 | PR-IMPL-004 | DD-UC-001 | FSD-UC-001, FSD-UC-002 | Completar MOD-AUTH §6 DD + JaCoCo ≥90% (Paso 4 cierre) | PM-004 |
 | PR-IMPL-004 | DD-UC-001 | FSD-UC-001, FSD-UC-002 | Tests Gherkin Authenticate/RegisterUser + DD-UC-001 §6 | PM-005 |
-| — | DD-UC-001 | FSD-UC-001, FSD-UC-002 | Hardening post code-review MOD-AUTH (PM-006) | PM-006 |
+| PR-IMPL-004 | DD-UC-001 | FSD-UC-001, FSD-UC-002 | Hardening post code-review MOD-AUTH (PM-006) | PM-006 |
+| — | DD-UC-001 | FSD-UC-001, FSD-UC-002 | Cierre review: A1 login estricto + 409 genérico (PM-007) | PM-007 |
 
 ---
 
@@ -520,4 +521,5 @@ Todas las mejoras del code review implementadas en código y documentación viva
 ### Próximos pasos
 
 - [ ] `mvn verify` local y registrar % JaCoCo en DD §6
-- [ ] Commit sugerido: `fix: MOD-AUTH hardening from code review (PM-006)`
+- [ ] Commit sugerido: `fix: MOD-AUTH hardening from code review (PM-005)`
+

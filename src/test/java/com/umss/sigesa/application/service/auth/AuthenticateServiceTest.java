@@ -142,11 +142,12 @@ class AuthenticateServiceTest {
     }
 
     @Test
-    @DisplayName("Password nulo se trata como credenciales inválidas")
-    void passwordNulo_lanza401() {
-        when(authPort.authenticate(any(Email.class), any(char[].class))).thenReturn(Optional.empty());
-
+    @DisplayName("Password nulo o vacío — 401 sin consultar AuthPort")
+    void passwordNuloOVacio_lanza401() {
         assertThrows(InvalidCredentialsException.class,
                 () -> authenticateService.authenticate("cc@umss.edu.bo", null));
+        assertThrows(InvalidCredentialsException.class,
+                () -> authenticateService.authenticate("cc@umss.edu.bo", "  "));
+        verify(authPort, never()).authenticate(any(Email.class), any(char[].class));
     }
 }

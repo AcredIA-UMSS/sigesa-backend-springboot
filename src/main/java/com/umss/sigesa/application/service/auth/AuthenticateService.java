@@ -34,7 +34,10 @@ public class AuthenticateService implements AuthenticateUseCase {
 
     @Override
     public LoginResult authenticate(String email, String password) {
-        char[] passwordChars = password != null ? password.toCharArray() : new char[0];
+        if (password == null || password.isBlank()) {
+            throw new InvalidCredentialsException();
+        }
+        char[] passwordChars = password.toCharArray();
         try {
             Email emailVo = Email.forLogin(email);
 

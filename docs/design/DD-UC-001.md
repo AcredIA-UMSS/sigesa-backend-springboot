@@ -67,8 +67,8 @@ autores:
   1. Un usuario = un rol (`CC`, `TD`, `JD`).
   2. **`User` sin `programId` plano**; alcance en **`UserProgramAssignment`**.
   3. `UserStatus`: `INACTIVE` → `ACTIVE` (primer login) → `DEACTIVATED` (revocación).
-  4. Login A1: usuario inexistente, password incorrecto, `DEACTIVATED`, email vacío o dominio distinto de `@umss.edu.bo` → mismo `401 AUTH_INVALID_CREDENTIALS` (`Email.forLogin`).
-  5. Registro/admin: dominio email inválido → `422 INVALID_EMAIL_DOMAIN`; email duplicado → `409 EMAIL_ALREADY_REGISTERED`.
+  4. Login A1: **todo** fallo de autenticación en `POST /auth/login` (usuario inexistente, password incorrecto/vacío, `DEACTIVATED`, email vacío o dominio ≠ `@umss.edu.bo`) → mismo `401 AUTH_INVALID_CREDENTIALS`. Login **no** usa `@Valid` en DTO; validación en `Email.forLogin()` + `AuthenticateService`.
+  5. Registro/admin: dominio email inválido → `422 INVALID_EMAIL_DOMAIN`; email duplicado → `409 EMAIL_ALREADY_REGISTERED` (mensaje genérico, sin revelar el valor).
   6. Login A2: sin rol → `403`.
   7. Revocación A1 UC-002: soft deactivate + `revoked_at` en asignaciones; **sin DELETE** de usuario ni auditoría.
   8. **Perímetro JWT v1.0:** todo `/api/v1/**` excepto `POST /auth/login` exige `Authorization: Bearer`. Contraseña temporal en alta se entrega por **canal offline** (no en response API v1.0).
@@ -187,7 +187,7 @@ Derivado de Gherkin FSD-UC-001 y FSD-UC-002.
 | **Integración HTTP** | `AuthControllerTest` | UC-001 200 JWT; A1 body idéntico | implementado |
 | **Integración HTTP** | `UserAdminControllerTest` | UC-002 POST [JD] 201; 401/403 roles | implementado |
 | **Integración HTTP** | `JwtAuthenticationFilterTest` | UC-001 E3 / US-003 → 401 | implementado |
-| **Integración HTTP** | `AuthenticatedApiSmokeTest` | Perímetro JWT; A1 dominio en login; `/fases` con token | implementado |
+| **Integración HTTP** | `AuthenticatedApiSmokeTest` | Perímetro JWT `/fases` y `/processes`; A1 dominio/vacíos en login | implementado |
 | **Integración JPA** | `UserProgramAssignmentRepositoryTest` | FK; revoke soft; historial preservado | implementado |
 
 > **Nota de nombres:** `AuthenticateService` ≡ AuthenticationService del dominio; `RegisterUserService` ≡ CreateUserService (caso de uso `RegisterUserUseCase`).

@@ -47,8 +47,62 @@ class AuthenticatedApiSmokeTest {
     }
 
     @Test
+    @DisplayName("FSD-UC-001 A1: login email vacío → 401 genérico (stack real)")
+    void loginBlankEmailReturns401() throws Exception {
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"email":"","password":"secret"}
+                                """))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("AUTH_INVALID_CREDENTIALS"));
+    }
+
+    @Test
+    @DisplayName("FSD-UC-001 A1: login password vacío → 401 genérico (stack real)")
+    void loginBlankPasswordReturns401() throws Exception {
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"email":"jd@umss.edu.bo","password":""}
+                                """))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("AUTH_INVALID_CREDENTIALS"));
+    }
+
+    @Test
+    @DisplayName("US-003: /api/v1/processes sin token → 401")
+    void processesWithoutTokenReturns401() throws Exception {
+        mockMvc.perform(post("/api/v1/processes")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("UNAUTHORIZED"));
+    }
+
+    @Test
+    @DisplayName("Perímetro JWT: POST /api/v1/processes con token — no 401 (auth OK)")
+    void processesWithValidJwtPassesSecurity() throws Exception {
+        String token = obtainSeedJdToken();
+
+        mockMvc.perform(post("/api/v1/processes")
+                        .header("Authorization", "Bearer " + token)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     @DisplayName("Perímetro JWT: /api/v1/fases con token válido → 200")
     void fasesWithValidJwtReturns200() throws Exception {
+        String token = obtainSeedJdToken();
+
+        mockMvc.perform(get("/api/v1/fases")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk());
+    }
+
+    private String obtainSeedJdToken() throws Exception {
         MvcResult login = mockMvc.perform(post("/api/v1/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -57,11 +111,6 @@ class AuthenticatedApiSmokeTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String body = login.getResponse().getContentAsString();
-        String token = JsonPath.read(body, "$.accessToken");
-
-        mockMvc.perform(get("/api/v1/fases")
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isOk());
+        return JsonPath.read(login.getResponse().getContentAsString(), "$.accessToken");
     }
 }

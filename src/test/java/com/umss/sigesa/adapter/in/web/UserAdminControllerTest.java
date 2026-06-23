@@ -98,7 +98,7 @@ class UserAdminControllerTest {
     @WithMockUser(roles = "JD")
     void register_duplicateEmailReturns409() throws Exception {
         when(registerUserUseCase.register(anyString(), anyString(), any(), any(char[].class)))
-                .thenThrow(new com.umss.sigesa.domain.exception.DuplicateEmailException("cc@umss.edu.bo"));
+                .thenThrow(new com.umss.sigesa.domain.exception.DuplicateEmailException());
 
         mockMvc.perform(post("/api/v1/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
