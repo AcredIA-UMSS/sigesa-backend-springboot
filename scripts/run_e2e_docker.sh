@@ -5,11 +5,11 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT_DIR"
 
 echo "Bringing up PostgreSQL (db) via docker-compose..."
-docker-compose up -d db
+docker compose up -d db
 
 # wait for db healthy
 echo "Waiting for Postgres to become available..."
-DB_CONTAINER="$(docker-compose ps -q db)"
+DB_CONTAINER="$(docker compose ps -q db)"
 if [ -z "$DB_CONTAINER" ]; then
   echo "Could not determine db container id" >&2
   exit 1
@@ -21,7 +21,7 @@ done
 
 echo "\nPostgres is ready. Building and starting app image..."
 # build app image (this will run mvn package in builder stage)
-docker-compose build --no-cache app
+docker compose build --no-cache app
 
 docker-compose up -d app
 
