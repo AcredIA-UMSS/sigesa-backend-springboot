@@ -21,7 +21,7 @@ stack:
 repo: "ruta/a/tu/repo/sigesa"
 agents_md: "/AGENTS.md"
 artefactos_vivos:
-  prd: "docs/product/PRD.md"          
+  prd: "docs/product/03_prd/PRD.md"          
   fsd: "docs/product/FSD.md"          
   prompt_mapping: "docs/PROMPT_MAPPING.md"
   design_docs_dir: "docs/design/"     
@@ -43,6 +43,7 @@ artefactos_vivos:
 
 | Fecha | Cambio | Disparador (FSD-UC / DD) | ADR | PR / commit | Autor |
 |-------|--------|--------------------------|-----|-------------|-------|
+| 23/06/2026 | Sync inconsistencias MOD-AUTH: diagramas, modelo_datos, api_contracts, ADR-0003 vivo, FSD-BR-12. | FSD-UC-001, FSD-UC-002 / DD-UC-001 | ADR-0003 | docs sync | Cursor Agent |
 | 22/06/2026 | `@dtp-sync` DD-UC-001: consolidación MOD-AUTH en DTP, FSD, api_contracts, modelo_datos. | FSD-UC-001, FSD-UC-002 / DD-UC-001 | ADR-0003 | `f38976b` / PM-007 | Cursor Agent |
 | 22/06/2026 | Implementación MOD-AUTH (JWT, login, admin users, user_program_assignment, hardening code-review). | FSD-UC-001, FSD-UC-002 / DD-UC-001 | ADR-0003 | `5cd14df`…`f38976b` | Cursor Agent |
 | 22/06/2026 | Implementación core de MOD-PROCESS (Dominio, Casos de Uso, Controladores y Stubs JPA para plantillas). | FSD-UC-003 / DD-UC-003 | N/A | Pendiente | Boris Angulo |
@@ -93,7 +94,7 @@ artefactos_vivos:
 | **MOD-DASH / MOD-REPORT** | **sí** | Ver §B.2 abajo; design doc `DD-UC-004` |
 | §8 Despliegue cloud (AWS) | no | DTI vFinal §8 |
 | §10 Prompt mapping | **sí (crece)** | `docs/PROMPT_MAPPING.md` |
-| §21 ADRs | **sí (crece)** | `docs/adr/` (referencia baseline ADR-0003) |
+| §21 ADRs | **sí (crece)** | [`docs/adr/`](../adr/) (ADR-0003 MOD-AUTH; baseline en `docs/baseline/05_dti/adrs/`) |
 
 ### B.1 MOD-AUTH — contrato técnico vigente (DD-UC-001)
 
@@ -110,6 +111,7 @@ artefactos_vivos:
 | **Errores HTTP** | `401 AUTH_INVALID_CREDENTIALS` (A1 login); `403 ACCESS_DENIED` (A2); `409 EMAIL_ALREADY_REGISTERED`; `422 INVALID_EMAIL_DOMAIN` / `INVALID_SCOPE` / `INVALID_ROLE` |
 | **Password temporal alta** | Generado en servidor; entrega **offline** v1.0 (delta §A.2 #2) |
 | **Audit** | `AuditLogPort` → `NoOpAuditLogAdapter` (stub UC-017) |
+| **Bloqueo por intentos** | Columnas `failed_attempts`/`locked_until` en DDL; lógica **diferida v1.1** (sin `429 AUTH_LOCKED` en v1.0) |
 | **Seed dev** | `jd@umss.edu.bo` / `ChangeMe123!` (`AuthDataLoader`) |
 
 ### B.2 MOD-DASH / MOD-REPORT — contrato técnico vigente (DD-UC-004)
@@ -125,6 +127,6 @@ artefactos_vivos:
 | **RBAC** | `SecurityInjector` sobre `FilterPayload`; JWT de MOD-AUTH (DD-UC-001) |
 | **Cache** | Caffeine KPIs TTL ≤ 5 min (ADR-0015) |
 | **Export** | POI SXSSF → `app.reports.export-dir` o S3/MinIO pre-signed URL |
-| **Tests** | JaCoCo target ≥ 90 % `DashboardServiceImpl`; E2E `ReportsE2ETest` (Docker) |
+| **Tests** | JaCoCo target ≥ 90 % `DashboardServiceImpl`; E2E `scripts/run_e2e_docker.sh` |
 | **Drift conocido** | Rutas canónicas `/dashboard/coordinator|technician|executive` pendientes de alineación front |
 | **Documentación canónica** | `docs/design/DD-UC-004.md` (no `design_docs/`) |

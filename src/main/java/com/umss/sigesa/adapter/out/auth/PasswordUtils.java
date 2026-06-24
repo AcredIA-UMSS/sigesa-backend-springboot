@@ -25,7 +25,7 @@ public final class PasswordUtils {
         }
     }
 
-    static void clear(char[] password) {
+    public static void clear(char[] password) {
         if (password != null) {
             Arrays.fill(password, '\0');
         }
