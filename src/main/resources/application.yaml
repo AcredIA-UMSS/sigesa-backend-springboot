@@ -28,3 +28,7 @@ sigesa:
   jwt:
     secret: ${SIGESA_JWT_SECRET:sigesa-dev-jwt-secret-key-minimum-256-bits-required-for-hmac-sha256}
     expiration-seconds: ${SIGESA_JWT_EXPIRATION_SECONDS:86400}
+
+app:
+  reports:
+    export-dir: /tmp/sigesa-exports

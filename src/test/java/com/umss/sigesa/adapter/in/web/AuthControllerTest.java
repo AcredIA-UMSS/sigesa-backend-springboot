@@ -1,5 +1,6 @@
 package com.umss.sigesa.adapter.in.web;
 
+import com.umss.sigesa.adapter.in.security.JwtAuthenticationFilter;
 import com.umss.sigesa.adapter.in.web.advice.AuthExceptionHandler;
 import com.umss.sigesa.application.port.in.AuthenticateUseCase;
 import com.umss.sigesa.application.port.out.IssuedToken;
@@ -7,8 +8,8 @@ import com.umss.sigesa.domain.exception.InvalidCredentialsException;
 import com.umss.sigesa.domain.model.Role;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -36,6 +37,8 @@ class AuthControllerTest {
 
     @MockitoBean
     private AuthenticateUseCase authenticateUseCase;
+    @MockitoBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Test
     void login_returnsJwtOnSuccess() throws Exception {
