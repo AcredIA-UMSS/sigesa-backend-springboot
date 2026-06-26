@@ -129,18 +129,21 @@ security:
 
 ## 5. MOD-EVIDENCE
 
-### API-EVD-01 — `POST /indicators/{indicatorId}/evidences`
+### API-EVD-01 — `POST /api/v1/indicators/{indicatorId}/evidences`
 
 | Campo | Valor |
 |-------|-------|
 | **UC** | FSD-UC-004 |
 | **x-allowed-roles** | `[CC]` |
 | **Content-Type** | `multipart/form-data` |
-| **Body** | `evidenceBlob`, `criterionId`, `description` |
+| **Body** | `file`, `criterionId`, `description` |
 | **Prohibido en body** | `status` / `estado` (Audit Service deriva estado desde evento) |
-| **201** | `{ "evidenceId", "version": 1, "contentHash", "event": "EvidenceUploaded" }` |
+| **201** | `{ "evidenceId", "version": 1, "contentHash", "event": "EvidenceUploaded", "currentState": "SUBIDO" }` |
 | **400** | `EVIDENCE_UNCLASSIFIED` |
-| **403** | `FORBIDDEN_ROLE` si [TD] sin delegación |
+| **403** | `PROGRAM_SCOPE_DENIED` |
+| **409** | `INDICATOR_NOT_UPLOADABLE`, `UPLOAD_IN_PROGRESS` |
+| **413** | `PAYLOAD_TOO_LARGE` |
+| **422** | `INVALID_EVIDENCE_FORMAT` |
 
 ### API-EVD-02 — `GET /evidences/search`
 
@@ -334,6 +337,6 @@ security:
 
 | Versión | Fecha | Cambio |
 |---------|-------|--------|
-| v1.2 | 2026-06-26 | MOD-REPORT: API-REP-01..03 job async PDF; rutas `/api/v1/reports/executive/pdf` |
+| v1.3 | 2026-06-26 | MOD-EVIDENCE: API-EVD-01 multipart bajo `/api/v1`; códigos 409/413/422 |
 | v1.1 | 2026-06-23 | MOD-AUTH: campo `error` canónico; nota perímetro `UNAUTHORIZED`; rutas bajo `/api/v1` |
 | Dorada v1.0 | 2026-05-16 | Catálogo API desde FSD §8; RBAC y errores de estado |

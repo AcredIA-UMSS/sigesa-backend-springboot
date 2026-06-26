@@ -39,7 +39,7 @@ ultima_actualizacion: "2026-06-22"
 | `FSD-UC-001` | Autenticación y sesión | Interno | v1.0 | **Hecho** | [Ver detalle](uc/FSD-UC-001.md) |
 | `FSD-UC-002` | Gestión de usuarios [JD] | [JD] | v1.0 | **Hecho** | [Ver detalle](uc/FSD-UC-002.md) |
 | `FSD-UC-003` | Plantillas y Proceso CEUB/ARCU-SUR | [JD] | v1.0 | **En Curso** | [Ver detalle](uc/FSD-UC-003.md) |
-| `FSD-UC-004` | Cargar Evidencia | [CC] | v1.0 | Pendiente | [Ver detalle](uc/FSD-UC-004.md) |
+| `FSD-UC-004` | Cargar Evidencia | [CC] | v1.0 | **En Curso** | [Ver detalle](uc/FSD-UC-004.md) |
 | `FSD-UC-005` | Versionado y bloqueo de borrado | [CC], [TD] | v1.0 | Pendiente | [Ver detalle](uc/FSD-UC-005.md) |
 | `FSD-UC-006` | Subsanar Evidencia | [CC] | v1.0 | Pendiente | [Ver detalle](uc/FSD-UC-006.md) |
 | `FSD-UC-007` | Buscar Evidencia | [CC], [TD] | v1.0 | Pendiente | [Ver detalle](uc/FSD-UC-007.md) |

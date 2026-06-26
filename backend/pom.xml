@@ -211,6 +211,7 @@
                                         <include>com.umss.sigesa.application.service.report.GetReportJobStatusService</include>
                                         <include>com.umss.sigesa.application.service.report.ProcessReportJobService</include>
                                         <include>com.umss.sigesa.application.service.report.DownloadReportArtifactService</include>
+                                        <include>com.umss.sigesa.application.service.evidence.UploadEvidenceService</include>
                                     </includes>
                                     <limits>
                                         <limit>

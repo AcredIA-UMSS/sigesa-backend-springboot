@@ -32,4 +32,10 @@ public class NoOpAuditLogAdapter implements AuditLogPort {
     public void logReportRequested(UUID requesterId, UUID jobId) {
         log.info("AUDIT_REPORT_REQUESTED requesterId={} jobId={}", requesterId, jobId);
     }
+
+    @Override
+    public void logEvidenceUploaded(UUID uploadedBy, UUID evidenceId, UUID indicatorId) {
+        log.info("AUDIT_EVIDENCE_UPLOADED uploadedBy={} evidenceId={} indicatorId={}",
+                uploadedBy, evidenceId, indicatorId);
+    }
 }

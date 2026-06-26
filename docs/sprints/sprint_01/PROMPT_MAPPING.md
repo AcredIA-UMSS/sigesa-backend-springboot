@@ -11,6 +11,7 @@
 | PM-009 | PR-IMPL-003 | DD-UC-003 | FSD-UC-003 | Implementación de Plantillas y Creación de Procesos |
 | PM-010 | PR-IMPL-005 | DD-UC-014 | FSD-UC-014 | Implementación MOD-REPORT — reporte ejecutivo PDF asíncrono |
 | PM-011 | PR-IMPL-005 | DD-UC-014 | FSD-UC-014 | Code review + @dtp-sync + puente UC-013 |
+| PM-012 | PR-IMPL-006 | DD-UC-004 | FSD-UC-004 | Implementación MOD-EVIDENCE — carga Evidencia v1 |
 ---
 
 ## PM-001
@@ -580,4 +581,24 @@ Conectar ExecutiveDataPort al panel semáforo real cuando se implemente FSD-UC-0
 - Code review MOD-REPORT; fix `REPORT_GENERATION_FAILED` en `ProcessReportJobService`.
 - DTP §B.2, deltas §A.2 #4-6, api_contracts API-REP-01..03.
 - `ExecutiveDashboardQueryPort` + `ExecutiveDataDashboardAdapter` listos para UC-013.
+
+---
+
+## PM-012
+
+| Campo | Valor |
+|---|---|
+| **Fecha** | 2026-06-26 |
+| **Solicitante** | Usuario |
+| **Agente/Entorno** | Cursor IDE — @sigesa-orchestrator |
+| **Tarea** | Pipeline AI-SDLC MOD-EVIDENCE (FSD-UC-004) |
+| **PR-IMPL vinculado** | PR-IMPL-006 |
+| **DD-UC vinculado** | DD-UC-004 |
+| **Estado** | completado |
+
+### Prompt usado exacto
+
+```
+@sigesa-orchestrator Necesito implementar el módulo de Cargar Evidencia en FSD-UC-004. Hazte cargo del proceso.
+```
 

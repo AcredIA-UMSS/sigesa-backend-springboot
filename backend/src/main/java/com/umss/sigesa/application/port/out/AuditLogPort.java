@@ -13,4 +13,6 @@ public interface AuditLogPort {
     void logUserDeactivated(UUID userId, Email email);
 
     void logReportRequested(UUID requesterId, UUID jobId);
+
+    void logEvidenceUploaded(UUID uploadedBy, UUID evidenceId, UUID indicatorId);
 }
