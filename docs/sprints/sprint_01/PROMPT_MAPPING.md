@@ -1,6 +1,10 @@
+# PROMPT_MAPPING — Sprint 01
+
+> **Ubicación vigente del registro PM.** No existe `docs/PROMPT_MAPPING.md` en raíz. Las entradas PM históricas (PM-001…PM-007) pueden mencionar esa ruta legada en *Archivos modificados*; el contenido vive aquí.
+
 | ID Mapeo | PR-IMPL | Design Doc | FSD Asociado | Descripción de la Tarea |
 | :--- | :--- | :--- | :--- | :--- |
-| PM-001 | N/A | DD-UC-001 | FSD-UC-001, FSD-UC-002 | Design doc MOD-AUTH (@feature-design-doc) |
+| PM-001 | N/A | DD-UC-001, DD-UC-002 | FSD-UC-001, FSD-UC-002 | Design doc MOD-AUTH (@feature-design-doc); **split 1:1** 2026-06-23 → `DD-UC-001` + `DD-UC-002` |
 | PM-002 | PR-IMPL-004 | DD-UC-001 | FSD-UC-001, FSD-UC-002 | Implementación MOD-AUTH hexagonal + JWT (Paso 4) |
 | PM-003 | PR-IMPL-004 | DD-UC-001 | FSD-UC-001, FSD-UC-002 | Contrato implementación (@sigesa-prompt-contract-architect, Paso 3) |
 | PM-004 | PR-IMPL-004 | DD-UC-001 | FSD-UC-001, FSD-UC-002 | Completar MOD-AUTH §6 DD + JaCoCo ≥90% (Paso 4 cierre) |
@@ -9,6 +13,8 @@
 | PM-007 | N/A | DD-UC-001 | FSD-UC-001, FSD-UC-002 | Cierre review: A1 login estricto + 409 genérico |
 | PM-008 | N/A | ADR-004 | Todas | Configuración de Monorepo, React 19, OxLint y autogeneración API con Orval |
 | PM-009 | PR-IMPL-003 | DD-UC-003 | FSD-UC-003 | Implementación de Plantillas y Creación de Procesos |
+
+> **Trazabilidad vigente (2026-06-23):** FSD-UC-001 → `DD-UC-001` → [`PR-IMPL-001`](../../prompts/impl/PR-IMPL-001.md) · FSD-UC-002 → `DD-UC-002` → [`PR-IMPL-002`](../../prompts/impl/PR-IMPL-002.md). Las filas PM-002…PM-007 conservan **`PR-IMPL-004`** como histórico de ejecución; ver [`archive/PR-IMPL-004`](../../prompts/impl/archive/PR-IMPL-004.md) (redirect: [`impl/PR-IMPL-004.md`](../../prompts/impl/PR-IMPL-004.md)).
 ---
 
 ## PM-001
@@ -157,11 +163,11 @@ dependencias spring-boot-starter-security + JJWT 0.12.x.
 Cierre: @save-prompt-mapping PR-IMPL-004 → @dtp-sync → @sigesa-architectural-code-reviewer.
 ```
 
-> **Nota:** El contrato íntegro (§1–§8) vive en `docs/prompts/impl/PR-IMPL-004.md`. PM-002 registra la **ejecución** del Paso 4, no la redacción del contrato (PM-003).
+> **Nota:** El contrato íntegro (§1–§8) vivía en `PR-IMPL-004`; hoy archivado en [`archive/PR-IMPL-004.md`](../../prompts/impl/archive/PR-IMPL-004.md). PM-002 registra la **ejecución** del Paso 4, no la redacción del contrato (PM-003).
 
 ### Entradas auxiliares
 
-- `docs/prompts/impl/PR-IMPL-004.md` (contrato PM-003)
+- `docs/prompts/impl/archive/PR-IMPL-004.md` (contrato unificado PM-003; archivado 2026-06-23)
 - `docs/design/DD-UC-001.md`
 - `docs/design/README.md` (Paso 4)
 - `docs/product/uc/FSD-UC-001.md`
