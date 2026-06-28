@@ -23,6 +23,7 @@ import java.util.UUID;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -61,6 +62,7 @@ class UserAdminControllerTest {
     @WithMockUser(roles = "CC")
     void register_withCcRoleReturns403() throws Exception {
         mockMvc.perform(post("/api/v1/admin/users")
+                        .with(user("testcc").roles("CC"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"email":"nuevo.cc@umss.edu.bo","role":"CC","programId":"550e8400-e29b-41d4-a716-446655440000"}
@@ -76,6 +78,7 @@ class UserAdminControllerTest {
                 .thenReturn(new RegisterUserUseCase.RegisterResult(userId, UserStatus.INACTIVE));
 
         mockMvc.perform(post("/api/v1/admin/users")
+                        .with(user("testjd").roles("JD"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"email":"nuevo.cc@umss.edu.bo","role":"CC","programId":"550e8400-e29b-41d4-a716-446655440000"}
@@ -90,7 +93,8 @@ class UserAdminControllerTest {
     void deactivate_withJdRoleReturns204() throws Exception {
         UUID userId = UUID.randomUUID();
 
-        mockMvc.perform(patch("/api/v1/admin/users/{id}/deactivate", userId))
+        mockMvc.perform(patch("/api/v1/admin/users/{id}/deactivate", userId)
+                        .with(user("testjd").roles("JD")))
                 .andExpect(status().isNoContent());
     }
 
@@ -101,6 +105,7 @@ class UserAdminControllerTest {
                 .thenThrow(new com.umss.sigesa.domain.exception.DuplicateEmailException());
 
         mockMvc.perform(post("/api/v1/admin/users")
+                        .with(user("testjd").roles("JD"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"email":"cc@umss.edu.bo","role":"CC","programId":"550e8400-e29b-41d4-a716-446655440000"}
