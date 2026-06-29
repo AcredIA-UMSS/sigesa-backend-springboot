@@ -17,6 +17,7 @@ import com.umss.sigesa.domain.model.ExecutiveReportSnapshot;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -79,7 +80,7 @@ public class OpenPdfRendererAdapter implements PdfRendererPort {
 
             document.close();
             return output.toByteArray();
-        } catch (DocumentException ex) {
+        } catch (DocumentException | IOException ex) {
             throw new ReportTemplateException("Failed to render executive PDF", ex);
         }
     }
