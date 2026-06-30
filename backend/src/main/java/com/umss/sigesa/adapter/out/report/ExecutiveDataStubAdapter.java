@@ -3,7 +3,6 @@ package com.umss.sigesa.adapter.out.report;
 import com.umss.sigesa.application.port.out.ExecutiveDataPort;
 import com.umss.sigesa.domain.model.ExecutiveReportFilters;
 import com.umss.sigesa.domain.model.ExecutiveReportSnapshot;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-@ConditionalOnMissingBean(ExecutiveDataPort.class)
 public class ExecutiveDataStubAdapter implements ExecutiveDataPort {
 
     @Override
