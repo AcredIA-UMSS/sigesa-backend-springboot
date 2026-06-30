@@ -9,13 +9,10 @@ import com.umss.sigesa.domain.model.AccreditationProcess;
 import com.umss.sigesa.domain.model.ProcessStatus;
 import com.umss.sigesa.domain.model.ProcessType;
 import com.umss.sigesa.domain.model.Template;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Service
 public class CreateAccreditationProcessService implements CreateAccreditationProcessUseCase {
 
     private final AccreditationProcessRepositoryPort processRepository;
@@ -28,7 +25,6 @@ public class CreateAccreditationProcessService implements CreateAccreditationPro
     }
 
     @Override
-    @Transactional
     public AccreditationProcess create(UUID templateId, UUID careerId, String period, ProcessType type) {
         // Regla FSD-BR-08: Un solo proceso activo por tipo/carrera/periodo
         if (processRepository.existsActiveProcessByCareerAndTypeAndPeriod(careerId, type, period)) {
